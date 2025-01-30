@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Forum - Fake News Detection Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            color: #ffffff;
+            background: url('/static/images/background_check_news.jpeg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: rgba(35, 39, 42, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.7);
+            position: fixed;
+        }
+
+        .sidebar img {
+            max-width: 120px;
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: #7289da;
+            font-size: 1rem;
+            margin: 1rem 0;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+            text-align: center;
+            width: 100%;
+        }
+
+        .sidebar a:hover {
+            background-color: #7289da;
+            color: #ffffff;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .search-bar input {
+            width: 400px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px 0 0 6px;
+            font-size: 0.9rem;
+        }
+
+        .search-bar button {
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background-color: #0056b3;
+        }
+
+        .create-post-button {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .create-post-button button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .create-post-button button:hover {
+            background-color: #0056b3;
+        }
+
+        .forum-post {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .forum-post:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-info h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .post-info p {
+            margin: 10px 0 0;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .comments-button {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .comments-button a {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .comments-button a:hover {
+            background-color: #218838;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Platform Logo">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('about') }}">About Us</a>
+        <a href="{{ url_for('guidelines') }}">Platform Guidelines</a>
+        <a href="{{ url_for('forum') }}">Forum</a>
+        <a href="{{ url_for('check_news') }}">Check News</a>
+        {% if 'user_id' in session %}
+        <a href="{{ url_for('logout') }}">Logout ({{ session['username'] }})</a>
+        {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}" class="register">Register</a>
+        {% endif %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="container">
+            <h1>Community Forum</h1>
+
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <form method="GET" action="{{ url_for('forum') }}">
+                    <input type="text" name="search" placeholder="Search posts..." value="{{ request.args.get('search', '') }}">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+
+            <!-- Create Post Button -->
+            <div class="create-post-button">
+                <a href="{{ url_for('check_news') }}">
+                    <button>Create Post</button>
+                </a>
+            </div>
+
+            <!-- Forum Posts -->
+            <div>
+                {% if forum_posts %}
+                    {% for item in forum_posts %}
+                    <div class="forum-post">
+                        <div class="post-info">
+                            <h2>{{ item.post.claim }}</h2>
+                            <p>Posted by: {{ item.post.get_user() }}</p>
+                            <p>{{ item.post.content }}</p>
+                        </div>
+                        <div class="post-meta">
+                            <span>Comments: {{ item.comment_count }}</span>
+                            <span>Posted {{ item.post.timestamp.strftime('%B %d, %Y at %H:%M') }}</span>
+                        </div>
+                        <div class="comments-button">
+                            <a href="{{ url_for('forum_post', post_id=item.post.id) }}">View and Add Comments</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No posts found matching your search.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

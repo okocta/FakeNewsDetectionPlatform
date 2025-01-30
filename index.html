@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fake News Detection Platform</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('static/images/backgroundmain.jpg') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      color: #ffffff;
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh; /* Full height */
+      background-color: rgba(35, 39, 42, 0.95); /* Semi-transparent */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1rem;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.7);
+      position: fixed;
+    }
+
+    .sidebar img {
+      max-width: 120px;
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar a {
+      text-decoration: none;
+      color: #7289da; /* Light blue */
+      font-size: 1rem;
+      margin: 1rem 0;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: background-color 0.3s, color 0.3s;
+      text-align: center;
+      width: 100%;
+    }
+
+    .sidebar a:hover {
+      background-color: #7289da;
+      color: #ffffff;
+    }
+
+    .content {
+      margin-left: 250px; /* Account for sidebar width */
+      padding: 2rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .title {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 2rem;
+      text-align: center;
+      color: #ffffff;
+      background-color: rgba(64, 68, 75, 0.9); /* Semi-transparent */
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+      display: inline-block;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    }
+
+    .operations-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      width: 90%;
+      max-width: 1200px;
+    }
+
+    .operation-card {
+      background-color: rgba(64, 68, 75, 0.9); /* Semi-transparent */
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    .operation-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+    }
+
+    .operation-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .operation-card p {
+      font-size: 1rem;
+      color: #cccccc;
+      margin-bottom: 1.5rem;
+    }
+
+    .operation-card a {
+      text-decoration: none;
+      color: #ffffff;
+      background-color: #7289da; /* Button color */
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+    }
+
+    .operation-card a:hover {
+      background-color: #5865f2;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Platform Logo">
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('about') }}">About Us</a>
+    <a href="{{ url_for('guidelines') }}">Platform Guidelines</a>
+    <a href="{{ url_for('forum') }}">Forum</a>
+    <a href="{{ url_for('check_news') }}">Check News</a>
+    {% if 'user_id' in session %}
+    {% if session['username'] == 'okocta' %}
+      <a href="{{ url_for('manage_role_requests') }}">Manage Role Requests</a>
+      <a href="{{ url_for('manage_users') }}">Manage Users</a>
+
+    {% else %}
+       {% if session.get('user_role') != 'admin' %}
+          <a href="{{ url_for('request_role_change') }}">Request Role Change</a>
+        {% endif %}
+    {% endif %}
+
+    <a href="{{ url_for('logout') }}">Logout ({{ session['username'] }})</a>
+    {% else %}
+    <a href="{{ url_for('login') }}">Login</a>
+    <a href="{{ url_for('register') }}" class="register">Register</a>
+    {% endif %}
+
+  </div>
+
+
+  <!-- Main Content -->
+  <div class="content">
+    <div class="title">Fake News Detection Platform</div>
+    <div class="operations-container">
+      <div class="operation-card">
+        <h2>Check for Fake News</h2>
+        <p>Submit a news article to verify its authenticity instantly.</p>
+        <a href="/check_news">Get Started</a>
+      </div>
+      <div class="operation-card">
+        <h2>Access Forum</h2>
+        <p>Engage in discussions and share opinions on news articles.</p>
+        <a href="/forum">Join Now</a>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

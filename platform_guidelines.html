@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platform Guidelines - Fake News Detection Platform</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #2c2f33; /* Dark gray background */
+      margin: 0;
+      padding: 0;
+      color: #ffffff;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh; /* Full height */
+      background-color: rgba(35, 39, 42, 0.95); /* Semi-transparent */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1rem;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.7);
+      position: fixed;
+    }
+
+    .sidebar img {
+      max-width: 120px;
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar a {
+      text-decoration: none;
+      color: #7289da; /* Light blue */
+      font-size: 1rem;
+      margin: 1rem 0;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: background-color 0.3s, color 0.3s;
+      text-align: center;
+      width: 100%;
+    }
+
+    .sidebar a:hover {
+      background-color: #7289da;
+      color: #ffffff;
+    }
+
+
+    .content {
+      margin-left: 250px; /* Account for sidebar width */
+      padding: 2rem;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .guidelines-container {
+      background: #40444b; /* Slightly lighter gray for contrast */
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 600px;
+      text-align: left;
+    }
+
+    .guidelines-container h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .guidelines-container ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .guidelines-container ul li {
+      margin-bottom: 1rem;
+      background-color: #2c2f33;
+      padding: 0.8rem;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      color: #cccccc;
+    }
+
+    .guidelines-container ul li::before {
+      content: "✔";
+      color: #43b581; /* Green checkmark */
+      margin-right: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        margin-left: 0;
+        padding: 1rem;
+      }
+
+      .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 1rem;
+      }
+
+      .guidelines-container {
+        margin-top: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Platform Logo">
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('about') }}">About Us</a>
+    <a href="{{ url_for('guidelines') }}">Platform Guidelines</a>
+    <a href="{{ url_for('forum') }}">Forum</a>
+    <a href="{{ url_for('check_news') }}">Check News</a>
+    {% if 'user_id' in session %}
+    <a href="{{ url_for('logout') }}">Logout ({{ session['username'] }})</a>
+    {% else %}
+    <a href="{{ url_for('login') }}">Login</a>
+    <a href="{{ url_for('register') }}" class="register">Register</a>
+    {% endif %}
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <div class="guidelines-container">
+      <h1>Platform Guidelines</h1>
+      <ul>
+        <li>Be respectful in all discussions and debates.</li>
+        <li>Report any misinformation or inappropriate content.</li>
+        <li>Use reliable sources when submitting news articles.</li>
+        <li>Do not post offensive or discriminatory content.</li>
+        <li>Adhere to platform terms and conditions at all times.</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

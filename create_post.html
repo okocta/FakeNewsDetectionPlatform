@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post - Fake News Detection Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            color: #ffffff;
+            background: url('static/images/background_check_news.jpeg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: rgba(35, 39, 42, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.7);
+            position: fixed;
+        }
+
+        .sidebar img {
+            max-width: 120px;
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: #7289da;
+            font-size: 1rem;
+            margin: 1rem 0;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+            text-align: center;
+            width: 100%;
+        }
+
+        .sidebar a:hover {
+            background-color: #7289da;
+            color: #ffffff;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .create-post-container {
+            background: #ffffff;
+            color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #444;
+            text-align: center;
+        }
+
+        .fact-details {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .fact-details p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Platform Logo">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('about') }}">About Us</a>
+        <a href="{{ url_for('guidelines') }}">Platform Guidelines</a>
+        <a href="{{ url_for('forum') }}">Forum</a>
+        <a href="{{ url_for('check_news') }}">Check News</a>
+        {% if 'user_id' in session %}
+        <a href="{{ url_for('logout') }}">Logout ({{ session['username'] }})</a>
+        {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}" class="register">Register</a>
+        {% endif %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="create-post-container">
+            <h1>Create a Post</h1>
+            <div class="fact-details">
+                <p><strong>Claim:</strong> {{ claim }}</p>
+                <p><strong>Claimant:</strong> {{ claimant }}</p>
+                <p><strong>Rating:</strong> {{ textual_rating }}</p>
+                <p><strong>Publisher:</strong> {{ publisher }}</p>
+            </div>
+            <form method="POST" action="{{ url_for('create_post') }}">
+                <textarea name="post_content" placeholder="Write your thoughts here..." rows="5" required></textarea>
+                <input type="hidden" name="claim" value="{{ claim }}">
+                <input type="hidden" name="claimant" value="{{ claimant }}">
+                <input type="hidden" name="textual_rating" value="{{ textual_rating }}">
+                <input type="hidden" name="publisher" value="{{ publisher }}">
+                <button type="submit">Submit Post</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

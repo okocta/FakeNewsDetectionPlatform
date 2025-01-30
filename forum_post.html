@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum Post</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: rgba(35, 39, 42, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.7);
+            position: fixed;
+        }
+
+        .sidebar img {
+            max-width: 120px;
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: #7289da;
+            font-size: 1rem;
+            margin: 1rem 0;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+            text-align: center;
+            width: 100%;
+        }
+
+        .sidebar a:hover {
+            background-color: #7289da;
+            color: #ffffff;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        h1, h2 {
+            color: #333333;
+        }
+
+        p {
+            line-height: 1.6;
+            color: #555555;
+        }
+
+        .admin-buttons {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .admin-buttons form {
+            display: inline;
+        }
+
+        .admin-buttons button {
+            background-color: #ff4757;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .admin-buttons button:hover {
+            background-color: #d83c48;
+        }
+
+        .comment-section {
+            margin-top: 20px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .comment-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .comment-form button:hover {
+            background-color: #0056b3;
+        }
+
+        .comment {
+            border-top: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+        .comment p {
+            margin: 0 0 5px;
+        }
+
+        .comment small {
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 1rem;
+            }
+
+            .content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Platform Logo">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('about') }}">About Us</a>
+        <a href="{{ url_for('guidelines') }}">Platform Guidelines</a>
+        <a href="{{ url_for('forum') }}">Forum</a>
+        <a href="{{ url_for('check_news') }}">Check News</a>
+
+        {% if 'user_id' in session %}
+        <a href="{{ url_for('logout') }}">Logout ({{ session['username'] }})</a>
+        {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}" class="register">Register</a>
+        {% endif %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="container">
+            <h1>{{ post.claim }}</h1>
+            <p><strong>Claimant:</strong> {{ post.claimant }}</p>
+            <p><strong>Publisher:</strong> {{ post.publisher }}</p>
+            <p><strong>Rating:</strong> {{ post.rating }}</p>
+            <p><strong>Posted by:</strong> {{ post.get_user() }}
+    {% if post.get_role() == 'admin' %}
+        <span style="color: purple; font-size: 0.9rem;">(Admin)</span>
+    {% elif post.get_role() == 'journalist' %}
+        <span style="color: yellow; font-size: 0.9rem;">(Journalist)</span>
+    {% elif post.get_role() == 'academic' %}
+        <span style="color: blue; font-size: 0.9rem;">(Academic)</span>
+    {% endif %}
+</p>
+
+            <p>{{ post.content }}</p>
+
+            {% if session.get('username') == 'okocta' %}
+            <div class="admin-buttons">
+                <form method="POST" action="{{ url_for('delete_post', post_id=post.id) }}">
+                    <button type="submit">Delete Post</button>
+                </form>
+            </div>
+            {% endif %}
+
+            <div class="comment-section">
+                <h2>Comments</h2>
+
+                <!-- Comment Form -->
+                {% if 'user_id' in session %}
+                <form class="comment-form" method="POST">
+                    <textarea name="comment" placeholder="Write a comment..." rows="4" required></textarea>
+                    <button type="submit">Add Comment</button>
+                </form>
+                {% else %}
+                <p><a href="{{ url_for('login') }}">Log in</a> to add a comment.</p>
+                {% endif %}
+
+                <!-- Display Comments -->
+                {% for comment in comments %}
+                <div class="comment">
+    <p>
+        <strong>{{ comment.get_user() }}</strong>
+        {% if comment.get_role() == 'admin' %}
+            <span style="color: purple; font-size: 0.9rem;">(Admin)</span>
+        {% elif comment.get_role() == 'journalist' %}
+            <span style="color: yellow; font-size: 0.9rem;">(Journalist)</span>
+        {% elif comment.get_role() == 'academic' %}
+            <span style="color: blue; font-size: 0.9rem;">(Academic)</span>
+        {% endif %}
+    </p>
+    <p>{{ comment.content }}</p>
+    <small>Posted on {{ comment.timestamp.strftime('%B %d, %Y at %H:%M') }}</small>
+    {% if session.get('username') == 'okocta' %}
+    <form method="POST" action="{{ url_for('delete_comment', comment_id=comment.id) }}">
+        <button type="submit">Delete Comment</button>
+    </form>
+    {% endif %}
+</div>
+
+                {% else %}
+                <p>No comments yet. Be the first to comment!</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

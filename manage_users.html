@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c2f33;
+            color: #ffffff;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: rgba(35, 39, 42, 0.95);
+            position: fixed;
+            padding: 1rem;
+            display: flex;
+      flex-direction: column;
+      align-items: center;
+        }
+        .sidebar img {
+      max-width: 120px;
+      margin-bottom: 1.5rem;
+    }
+
+         .sidebar a {
+      text-decoration: none;
+      color: #7289da; /* Light blue */
+      font-size: 1rem;
+      margin: 1rem 0;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: background-color 0.3s, color 0.3s;
+      text-align: center;
+      width: 100%;
+    }
+
+        .sidebar a:hover {
+      background-color: #7289da;
+      color: #ffffff;
+    }
+
+        .content {
+            margin-left: 250px;
+            padding: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #40444b;
+            color: white;
+            margin-top: 2rem;
+        }
+
+        table th, table td {
+            padding: 1rem;
+            border: 1px solid #555555;
+            text-align: left;
+        }
+
+        .delete-button {
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .delete-button:hover {
+            background-color: #d83c48;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Platform Logo">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('forum') }}">Forum</a>
+        <a href="{{ url_for('manage_role_requests') }}">Manage Role Requests</a>
+        <a href="{{ url_for('manage_users') }}">Manage Users</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+    <div class="content">
+        <h1>Manage Users</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('manage_users') }}">
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                            <button type="submit" class="delete-button">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
